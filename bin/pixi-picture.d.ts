@@ -1,11 +1,46 @@
 /// <reference types="pixi.js" />
 declare module PIXI.picture {
+    class ColorBurnShader extends PictureShader {
+        constructor(gl: WebGLRenderingContext, tilingMode: number);
+    }
+}
+declare module PIXI.picture {
+    class ColorDodgeShader extends PictureShader {
+        constructor(gl: WebGLRenderingContext, tilingMode: number);
+    }
+}
+declare module PIXI.picture {
+    class DarkenShader extends PictureShader {
+        constructor(gl: WebGLRenderingContext, tilingMode: number);
+    }
+}
+declare module PIXI.picture {
+    class DiffShader extends PictureShader {
+        constructor(gl: WebGLRenderingContext, tilingMode: number);
+    }
+}
+declare module PIXI.picture {
+    class ExclShader extends PictureShader {
+        constructor(gl: WebGLRenderingContext, tilingMode: number);
+    }
+}
+declare module PIXI.picture {
     class HardLightShader extends PictureShader {
         constructor(gl: WebGLRenderingContext, tilingMode: number);
     }
 }
 declare module PIXI.picture {
+    class LightenShader extends PictureShader {
+        constructor(gl: WebGLRenderingContext, tilingMode: number);
+    }
+}
+declare module PIXI.picture {
     function mapFilterBlendModesToPixi(gl: WebGLRenderingContext, array?: Array<Array<PictureShader>>): Array<Array<PictureShader>>;
+}
+declare module PIXI.picture {
+    class MultiplyShader extends PictureShader {
+        constructor(gl: WebGLRenderingContext, tilingMode: number);
+    }
 }
 declare module PIXI.picture {
     class NormalShader extends PictureShader {
@@ -53,6 +88,11 @@ declare module PIXI.picture {
         tilingMode: number;
         static blendVert: string;
         constructor(gl: WebGLRenderingContext, vert: string, frag: string, tilingMode: number);
+    }
+}
+declare module PIXI.picture {
+    class ScreenShader extends PictureShader {
+        constructor(gl: WebGLRenderingContext, tilingMode: number);
     }
 }
 declare module PIXI.picture {

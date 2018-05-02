@@ -55,6 +55,66 @@ var pixi_picture;
 })(pixi_picture || (pixi_picture = {}));
 var pixi_picture;
 (function (pixi_picture) {
+    var cbFrag = "\n    varying vec2 vTextureCoord;\n    varying vec2 vMapCoord;\n    varying vec4 vColor;\n\n    uniform sampler2D uSampler[2];\n    uniform vec4 uColor;\n    %SPRITE_UNIFORMS%\n\n    void main(void)\n    {\n        %SPRITE_CODE%\n        vec4 src = texture2D(uSampler[0], textureCoord) * uColor;\n        vec4 dst = texture2D(uSampler[1], vMapCoord);\n\n        //reverse hardlight\n\n        /*\n        if (src.a == 0.0) {\n            gl_FragColor = vec4(0, 0, 0, 0);\n            return;\n        }\n        */\n\n        //yeah, premultiplied\n\n        vec3 Cb = src.rgb/src.a, Cs;\n        if (dst.a > 0.0) {\n            Cs = dst.rgb / dst.a;\n        }\n\n        vec3 B;\n\n\t    B.r = (src.r == 0.0) ? 0.0 : (1.0 - ((1.0 - dst.r) / src.r));\n        B.g = (src.g == 0.0) ? 0.0 : (1.0 - ((1.0 - dst.g) / src.g));\n        B.b = (src.b == 0.0) ? 0.0 : (1.0 - ((1.0 - dst.b) / src.b));\n\n        vec4 res;\n        res.xyz = (1.0 - src.a) * Cs + src.a * B;\n        res.a = src.a + dst.a * (1.0-src.a);\n        gl_FragColor = vec4(res.xyz * res.a, res.a);\n    }\n    ";
+    var ColorBurnShader = (function (_super) {
+        __extends(ColorBurnShader, _super);
+        function ColorBurnShader(gl, tilingMode) {
+            return _super.call(this, gl, pixi_picture.PictureShader.blendVert, cbFrag, tilingMode) || this;
+        }
+        return ColorBurnShader;
+    }(pixi_picture.PictureShader));
+    pixi_picture.ColorBurnShader = ColorBurnShader;
+})(pixi_picture || (pixi_picture = {}));
+var pixi_picture;
+(function (pixi_picture) {
+    var cbFrag = "\n    varying vec2 vTextureCoord;\n    varying vec2 vMapCoord;\n    varying vec4 vColor;\n\n    uniform sampler2D uSampler[2];\n    uniform vec4 uColor;\n    %SPRITE_UNIFORMS%\n\n    void main(void)\n    {\n        %SPRITE_CODE%\n        vec4 src = texture2D(uSampler[0], textureCoord) * uColor;\n        vec4 dst = texture2D(uSampler[1], vMapCoord);\n\n        //reverse hardlight\n\n        /*\n        if (src.a == 0.0) {\n            gl_FragColor = vec4(0, 0, 0, 0);\n            return;\n        }\n        */\n\n        //yeah, premultiplied\n\n        vec3 Cb = src.rgb/src.a, Cs;\n\n        if (dst.a > 0.0) {\n            Cs = dst.rgb / dst.a;\n        }\n\n\t    vec3 B;\n        B.r = (src.r == 1.0) ? 1.0 : min(1.0, dst.r / (1.0 - src.r));\n        B.g = (src.g == 1.0) ? 1.0 : min(1.0, dst.g / (1.0 - src.g));\n        B.b = (src.b == 1.0) ? 1.0 : min(1.0, dst.b / (1.0 - src.b));\n\n        vec4 res;\n        res.xyz = (1.0 - src.a) * Cs + src.a * B;\n        res.a = src.a + dst.a * (1.0-src.a);\n        gl_FragColor = vec4(res.xyz * res.a, res.a);\n    }\n    ";
+    var ColorDodgeShader = (function (_super) {
+        __extends(ColorDodgeShader, _super);
+        function ColorDodgeShader(gl, tilingMode) {
+            return _super.call(this, gl, pixi_picture.PictureShader.blendVert, cbFrag, tilingMode) || this;
+        }
+        return ColorDodgeShader;
+    }(pixi_picture.PictureShader));
+    pixi_picture.ColorDodgeShader = ColorDodgeShader;
+})(pixi_picture || (pixi_picture = {}));
+var pixi_picture;
+(function (pixi_picture) {
+    var darkenFrag = "\n    varying vec2 vTextureCoord;\n    varying vec2 vMapCoord;\n    varying vec4 vColor;\n\n    uniform sampler2D uSampler[2];\n    uniform vec4 uColor;\n    %SPRITE_UNIFORMS%\n\n    void main(void)\n    {\n        %SPRITE_CODE%\n        vec4 source = texture2D(uSampler[0], textureCoord) * uColor;\n        vec4 target = texture2D(uSampler[1], vMapCoord);\n\n        //reverse hardlight\n\n        /*\n        if (source.a == 0.0) {\n            gl_FragColor = vec4(0, 0, 0, 0);\n            return;\n        }\n        */\n\n        //yeah, premultiplied\n\n        vec3 Cb = source.rgb/source.a, Cs;\n        if (target.a > 0.0) {\n            Cs = target.rgb / target.a;\n        }\n\n        vec3 B;\n        B.r = min(source.r, target.r);\n        B.g = min(source.g, target.g);\n        B.b = min(source.b, target.b);\n\n        vec4 res;\n        res.xyz = (1.0 - source.a) * Cs + source.a * B;\n        res.a = source.a + target.a * (1.0-source.a);\n        gl_FragColor = vec4(res.xyz * res.a, res.a);\n    }\n    ";
+    var DarkenShader = (function (_super) {
+        __extends(DarkenShader, _super);
+        function DarkenShader(gl, tilingMode) {
+            return _super.call(this, gl, pixi_picture.PictureShader.blendVert, darkenFrag, tilingMode) || this;
+        }
+        return DarkenShader;
+    }(pixi_picture.PictureShader));
+    pixi_picture.DarkenShader = DarkenShader;
+})(pixi_picture || (pixi_picture = {}));
+var pixi_picture;
+(function (pixi_picture) {
+    var diffFrag = "\n    varying vec2 vTextureCoord; varying vec2 vMapCoord;\n    varying vec4 vColor;\n\n    uniform sampler2D uSampler[2];\n    uniform vec4 uColor;\n    %SPRITE_UNIFORMS%\n\n    void main(void)\n    {\n        %SPRITE_CODE%\n        vec4 src = texture2D(uSampler[0], textureCoord) * uColor;\n        vec4 dst = texture2D(uSampler[1], vMapCoord);\n\n        //reverse hardlight\n\n        /*\n        if (src.a == 0.0) {\n            gl_FragColor = vec4(0, 0, 0, 0);\n            return;\n        }\n        */\n\n        //yeah, premultiplied\n\n        vec3 Cb = src.rgb/src.a, Cs;\n\n        if (dst.a > 0.0) {\n            Cs = dst.rgb / dst.a;\n        }\n\n/*\n#ifdef DIFFERENCE\n\treturn abs(dst - src);\n#endif\n*/\n\t    vec3 B;\n        B.r =  abs(dst.r - src.r);\n        B.g =  abs(dst.g - src.g);\n        B.b =  abs(dst.b - src.b);\n\n        vec4 res;\n        res.xyz = (1.0 - src.a) * Cs + src.a * B;\n        res.a = src.a + dst.a * (1.0-src.a);\n        gl_FragColor = vec4(res.xyz * res.a, res.a);\n    }\n    ";
+    var DiffShader = (function (_super) {
+        __extends(DiffShader, _super);
+        function DiffShader(gl, tilingMode) {
+            return _super.call(this, gl, pixi_picture.PictureShader.blendVert, diffFrag, tilingMode) || this;
+        }
+        return DiffShader;
+    }(pixi_picture.PictureShader));
+    pixi_picture.DiffShader = DiffShader;
+})(pixi_picture || (pixi_picture = {}));
+var pixi_picture;
+(function (pixi_picture) {
+    var exclFrag = "\n    varying vec2 vTextureCoord; varying vec2 vMapCoord;\n    varying vec4 vColor;\n\n    uniform sampler2D uSampler[2];\n    uniform vec4 uColor;\n    %SPRITE_UNIFORMS%\n\n    void main(void)\n    {\n        %SPRITE_CODE%\n        vec4 src = texture2D(uSampler[0], textureCoord) * uColor;\n        vec4 dst = texture2D(uSampler[1], vMapCoord);\n\n        //reverse hardlight\n\n        /*\n        if (src.a == 0.0) {\n            gl_FragColor = vec4(0, 0, 0, 0);\n            return;\n        }\n        */\n\n        //yeah, premultiplied\n\n        vec3 Cb = src.rgb/src.a, Cs;\n\n        if (dst.a > 0.0) {\n            Cs = dst.rgb / dst.a;\n        }\n\n/*\n#ifdef DIFFERENCE\n\treturn abs(dst - src);\n#endif\n*/\n\t    vec3 B;\n        B.r = abs(dst.r - src.r);\n        B.g = abs(dst.g - src.g);\n        B.b = abs(dst.b - src.b);\n\n        vec4 res;\n        res.xyz = (1.0 - src.a) * Cs + src.a * B;\n        res.a = src.a + dst.a * (1.0-src.a);\n        gl_FragColor = vec4(res.xyz * res.a, res.a);\n    }\n    ";
+    var ExclShader = (function (_super) {
+        __extends(ExclShader, _super);
+        function ExclShader(gl, tilingMode) {
+            return _super.call(this, gl, pixi_picture.PictureShader.blendVert, exclFrag, tilingMode) || this;
+        }
+        return ExclShader;
+    }(pixi_picture.PictureShader));
+    pixi_picture.ExclShader = ExclShader;
+})(pixi_picture || (pixi_picture = {}));
+var pixi_picture;
+(function (pixi_picture) {
     var overlayFrag = "\nvarying vec2 vTextureCoord;\nvarying vec2 vMapCoord;\nvarying vec4 vColor;\n\nuniform sampler2D uSampler[2];\nuniform vec4 uColor;\n%SPRITE_UNIFORMS%\n\nvoid main(void)\n{\n    %SPRITE_CODE%\n    vec4 source = texture2D(uSampler[0], textureCoord) * uColor;\n    vec4 target = texture2D(uSampler[1], vMapCoord);\n\n    //reverse hardlight\n    if (source.a == 0.0) {\n        gl_FragColor = vec4(0, 0, 0, 0);\n        return;\n    }\n    //yeah, premultiplied\n    vec3 Cb = source.rgb/source.a, Cs;\n    if (target.a > 0.0) {\n        Cs = target.rgb / target.a;\n    }\n    vec3 multiply = Cb * Cs * 2.0;\n    vec3 Cs2 = Cs * 2.0 - 1.0;\n    vec3 screen = Cb + Cs2 - Cb * Cs2;\n    vec3 B;\n    if (Cb.r <= 0.5) {\n        B.r = multiply.r;\n    } else {\n        B.r = screen.r;\n    }\n    if (Cb.g <= 0.5) {\n        B.g = multiply.g;\n    } else {\n        B.g = screen.g;\n    }\n    if (Cb.b <= 0.5) {\n        B.b = multiply.b;\n    } else {\n        B.b = screen.b;\n    }\n    vec4 res;\n    res.xyz = (1.0 - source.a) * Cs + source.a * B;\n    res.a = source.a + target.a * (1.0-source.a);\n    gl_FragColor = vec4(res.xyz * res.a, res.a);\n}\n";
     var HardLightShader = (function (_super) {
         __extends(HardLightShader, _super);
@@ -67,14 +127,27 @@ var pixi_picture;
 })(pixi_picture || (pixi_picture = {}));
 var pixi_picture;
 (function (pixi_picture) {
-    function mapFilterBlendModesToPixi(gl, array) {
-        if (array === void 0) { array = []; }
-        array[PIXI.BLEND_MODES.OVERLAY] = [new pixi_picture.OverlayShader(gl, 0), new pixi_picture.OverlayShader(gl, 1), new pixi_picture.OverlayShader(gl, 2)];
-        array[PIXI.BLEND_MODES.HARD_LIGHT] = [new pixi_picture.HardLightShader(gl, 0), new pixi_picture.HardLightShader(gl, 1), new pixi_picture.HardLightShader(gl, 2)];
-        array[PIXI.BLEND_MODES.SOFT_LIGHT] = [new pixi_picture.SoftLightShader(gl, 0), new pixi_picture.SoftLightShader(gl, 1), new pixi_picture.SoftLightShader(gl, 2)];
-        return array;
-    }
-    pixi_picture.mapFilterBlendModesToPixi = mapFilterBlendModesToPixi;
+    var lightenFrag = "\n    varying vec2 vTextureCoord;\n    varying vec2 vMapCoord;\n    varying vec4 vColor;\n\n    uniform sampler2D uSampler[2];\n    uniform vec4 uColor;\n    %SPRITE_UNIFORMS%\n\n    void main(void)\n    {\n        %SPRITE_CODE%\n        vec4 source = texture2D(uSampler[0], textureCoord) * uColor;\n        vec4 target = texture2D(uSampler[1], vMapCoord);\n\n        //note: reverse hardlight ??\n        /*\n        if (source.a == 0.0) {\n            gl_FragColor = vec4(0, 0, 0, 0);\n            return;\n        }\n        */\n\n        //note: premultiplied?\n\n        vec3 Cb = source.rgb/source.a, Cs;\n        if (target.a > 0.0) {\n            Cs = target.rgb / target.a;\n        }\n\n        vec3 B;\n\n        B.r = max(source.r, target.r);\n        B.g = max(source.g, target.g);\n        B.b = max(source.b, target.b);\n\n        vec4 res;\n        res.xyz = (1.0 - source.a) * Cs + source.a * B;\n        res.a = source.a + target.a * (1.0-source.a);\n        gl_FragColor = vec4(res.xyz * res.a, res.a);\n    }\n    ";
+    var LightenShader = (function (_super) {
+        __extends(LightenShader, _super);
+        function LightenShader(gl, tilingMode) {
+            return _super.call(this, gl, pixi_picture.PictureShader.blendVert, lightenFrag, tilingMode) || this;
+        }
+        return LightenShader;
+    }(pixi_picture.PictureShader));
+    pixi_picture.LightenShader = LightenShader;
+})(pixi_picture || (pixi_picture = {}));
+var pixi_picture;
+(function (pixi_picture) {
+    var multiplyFrag = "\n    varying vec2 vTextureCoord;\n    varying vec2 vMapCoord;\n    varying vec4 vColor;\n\n    uniform sampler2D uSampler[2];\n    uniform vec4 uColor;\n    %SPRITE_UNIFORMS%\n\n    void main(void)\n    {\n        %SPRITE_CODE%\n        vec4 source = texture2D(uSampler[0], textureCoord) * uColor;\n        vec4 target = texture2D(uSampler[1], vMapCoord);\n\n        //reverse hardlight\n        /*\n        if (source.a == 0.0) {\n            gl_FragColor = vec4(0, 0, 0, 0);\n            return;\n        }\n        */\n        //yeah, premultiplied\n\n        vec3 Cb = source.rgb/source.a, Cs;\n        if (target.a > 0.0) {\n            Cs = target.rgb / target.a;\n        }\n\n        vec3 B;\n        B.r = source.r * target.r;\n        B.g = source.g * target.g;\n        B.b = source.b * target.b;\n\n        vec4 res;\n        res.xyz = (1.0 - source.a) * Cs + source.a * B;\n        res.a = source.a + target.a * (1.0-source.a);\n        gl_FragColor = vec4(res.xyz * res.a, res.a);\n    }\n    ";
+    var MultiplyShader = (function (_super) {
+        __extends(MultiplyShader, _super);
+        function MultiplyShader(gl, tilingMode) {
+            return _super.call(this, gl, pixi_picture.PictureShader.blendVert, multiplyFrag, tilingMode) || this;
+        }
+        return MultiplyShader;
+    }(pixi_picture.PictureShader));
+    pixi_picture.MultiplyShader = MultiplyShader;
 })(pixi_picture || (pixi_picture = {}));
 var pixi_picture;
 (function (pixi_picture) {
@@ -388,6 +461,18 @@ var pixi_picture;
 })(pixi_picture || (pixi_picture = {}));
 var pixi_picture;
 (function (pixi_picture) {
+    var screenFrag = "\n    varying vec2 vTextureCoord;\n    varying vec2 vMapCoord;\n    varying vec4 vColor;\n\n    uniform sampler2D uSampler[2];\n    uniform vec4 uColor;\n    %SPRITE_UNIFORMS%\n\n    void main(void)\n    {\n        %SPRITE_CODE%\n        vec4 src = texture2D(uSampler[0], textureCoord) * uColor;\n        vec4 dst = texture2D(uSampler[1], vMapCoord);\n\n        //reverse hardlight\n        /*\n        if (src.a == 0.0) {\n            gl_FragColor = vec4(0, 0, 0, 0);\n            return;\n        }\n        */\n\n        //yeah, premultiplied\n\n        vec3 Cb = src.rgb/src.a, Cs;\n\n        if (dst.a > 0.0) {\n            Cs = dst.rgb / dst.a;\n        }\n/*       \n#ifdef SCREEN\n\treturn (src + dst) - (src * dst);\n#endif\n*/\n\n\t    vec3 B;\n        B.r = (src.r + dst.r) - (src.r * dst.r);\n        B.g = (src.g + dst.g) - (src.r * dst.r);\n        B.b = (src.b + dst.b) - (src.b * dst.b);\n\n        vec4 res;\n        res.xyz = (1.0 - src.a) * Cs + src.a * B;\n        res.a = src.a + dst.a * (1.0-src.a);\n        gl_FragColor = vec4(res.xyz * res.a, res.a);\n    }\n    ";
+    var ScreenShader = (function (_super) {
+        __extends(ScreenShader, _super);
+        function ScreenShader(gl, tilingMode) {
+            return _super.call(this, gl, pixi_picture.PictureShader.blendVert, screenFrag, tilingMode) || this;
+        }
+        return ScreenShader;
+    }(pixi_picture.PictureShader));
+    pixi_picture.ScreenShader = ScreenShader;
+})(pixi_picture || (pixi_picture = {}));
+var pixi_picture;
+(function (pixi_picture) {
     var softLightFrag = "\nvarying vec2 vTextureCoord;\nvarying vec2 vMapCoord;\nvarying vec4 vColor;\n \nuniform sampler2D uSampler[2];\nuniform vec4 uColor;\n%SPRITE_UNIFORMS%\n\nvoid main(void)\n{\n    %SPRITE_CODE%\n    vec4 source = texture2D(uSampler[0], textureCoord) * uColor;\n    vec4 target = texture2D(uSampler[1], vMapCoord);\n\n    if (source.a == 0.0) {\n        gl_FragColor = vec4(0, 0, 0, 0);\n        return;\n    }\n    vec3 Cb = source.rgb/source.a, Cs;\n    if (target.a > 0.0) {\n        Cs = target.rgb / target.a;\n    }\n    \n    vec3 first = Cb - (1.0 - 2.0 * Cs) * Cb * (1.0 - Cb);\n\n    vec3 B;\n    vec3 D;\n    if (Cs.r <= 0.5)\n    {\n        B.r = first.r;\n    }\n    else\n    {\n        if (Cb.r <= 0.25)\n        {\n            D.r = ((16.0 * Cb.r - 12.0) * Cb.r + 4.0) * Cb.r;    \n        }\n        else\n        {\n            D.r = sqrt(Cb.r);\n        }\n        B.r = Cb.r + (2.0 * Cs.r - 1.0) * (D.r - Cb.r);\n    }\n    if (Cs.g <= 0.5)\n    {\n        B.g = first.g;\n    }\n    else\n    {\n        if (Cb.g <= 0.25)\n        {\n            D.g = ((16.0 * Cb.g - 12.0) * Cb.g + 4.0) * Cb.g;    \n        }\n        else\n        {\n            D.g = sqrt(Cb.g);\n        }\n        B.g = Cb.g + (2.0 * Cs.g - 1.0) * (D.g - Cb.g);\n    }\n    if (Cs.b <= 0.5)\n    {\n        B.b = first.b;\n    }\n    else\n    {\n        if (Cb.b <= 0.25)\n        {\n            D.b = ((16.0 * Cb.b - 12.0) * Cb.b + 4.0) * Cb.b;    \n        }\n        else\n        {\n            D.b = sqrt(Cb.b);\n        }\n        B.b = Cb.b + (2.0 * Cs.b - 1.0) * (D.b - Cb.b);\n    }   \n\n    vec4 res;\n\n    res.xyz = (1.0 - source.a) * Cs + source.a * B;\n    res.a = source.a + target.a * (1.0-source.a);\n    gl_FragColor = vec4(res.xyz * res.a, res.a);\n}\n";
     var SoftLightShader = (function (_super) {
         __extends(SoftLightShader, _super);
@@ -423,6 +508,25 @@ var pixi_picture;
         return TilingSprite;
     }(PIXI.extras.TilingSprite));
     pixi_picture.TilingSprite = TilingSprite;
+})(pixi_picture || (pixi_picture = {}));
+var pixi_picture;
+(function (pixi_picture) {
+    function mapFilterBlendModesToPixi(gl, array) {
+        if (array === void 0) { array = []; }
+        array[PIXI.BLEND_MODES.OVERLAY] = [new pixi_picture.OverlayShader(gl, 0), new pixi_picture.OverlayShader(gl, 1), new pixi_picture.OverlayShader(gl, 2)];
+        array[PIXI.BLEND_MODES.HARD_LIGHT] = [new pixi_picture.HardLightShader(gl, 0), new pixi_picture.HardLightShader(gl, 1), new pixi_picture.HardLightShader(gl, 2)];
+        array[PIXI.BLEND_MODES.SOFT_LIGHT] = [new pixi_picture.SoftLightShader(gl, 0), new pixi_picture.SoftLightShader(gl, 1), new pixi_picture.SoftLightShader(gl, 2)];
+        array[PIXI.BLEND_MODES.LIGHTEN] = [new pixi_picture.LightenShader(gl, 0), new pixi_picture.LightenShader(gl, 1), new pixi_picture.LightenShader(gl, 2)];
+        array[PIXI.BLEND_MODES.DARKEN] = [new pixi_picture.DarkenShader(gl, 0), new pixi_picture.DarkenShader(gl, 1), new pixi_picture.DarkenShader(gl, 2)];
+        array[PIXI.BLEND_MODES.MULTIPLY] = [new pixi_picture.MultiplyShader(gl, 0), new pixi_picture.MultiplyShader(gl, 1), new pixi_picture.MultiplyShader(gl, 2)];
+        array[PIXI.BLEND_MODES.COLOR_BURN] = [new pixi_picture.ColorBurnShader(gl, 0), new pixi_picture.ColorBurnShader(gl, 1), new pixi_picture.ColorBurnShader(gl, 2)];
+        array[PIXI.BLEND_MODES.COLOR_DODGE] = [new pixi_picture.ColorDodgeShader(gl, 0), new pixi_picture.ColorDodgeShader(gl, 1), new pixi_picture.ColorDodgeShader(gl, 2)];
+        array[PIXI.BLEND_MODES.SCREEN] = [new pixi_picture.ScreenShader(gl, 0), new pixi_picture.ScreenShader(gl, 1), new pixi_picture.ScreenShader(gl, 2)];
+        array[PIXI.BLEND_MODES.DIFFERENCE] = [new pixi_picture.DiffShader(gl, 0), new pixi_picture.DiffShader(gl, 1), new pixi_picture.DiffShader(gl, 2)];
+        array[PIXI.BLEND_MODES.EXCLUSION] = [new pixi_picture.ExclShader(gl, 0), new pixi_picture.ExclShader(gl, 1), new pixi_picture.ExclShader(gl, 2)];
+        return array;
+    }
+    pixi_picture.mapFilterBlendModesToPixi = mapFilterBlendModesToPixi;
 })(pixi_picture || (pixi_picture = {}));
 var pixi_picture;
 (function (pixi_picture) {
