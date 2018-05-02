@@ -3,9 +3,27 @@ namespace pixi_picture {
     {
         //TODO - premultiply alpha would be different.
         //add a boolean for that!
+
         array[PIXI.BLEND_MODES.OVERLAY] = [new OverlayShader(gl, 0), new OverlayShader(gl, 1), new OverlayShader(gl, 2)];
+
         array[PIXI.BLEND_MODES.HARD_LIGHT] = [new HardLightShader(gl, 0), new HardLightShader(gl, 1), new HardLightShader(gl, 2)];
+
 	    array[PIXI.BLEND_MODES.SOFT_LIGHT] = [new SoftLightShader(gl, 0), new SoftLightShader(gl, 1), new SoftLightShader(gl, 2)];
+
+	    array[PIXI.BLEND_MODES.LIGHTEN] = [new LightenShader(gl, 0), new LightenShader(gl, 1), new LightenShader(gl, 2)];
+	    array[PIXI.BLEND_MODES.DARKEN] = [new DarkenShader(gl, 0), new DarkenShader(gl, 1), new DarkenShader(gl, 2)];
+
+	    array[PIXI.BLEND_MODES.MULTIPLY] = [new MultiplyShader(gl, 0), new MultiplyShader(gl, 1), new MultiplyShader(gl, 2)];
+
+	    array[PIXI.BLEND_MODES.COLOR_BURN] = [new ColorBurnShader(gl, 0), new ColorBurnShader(gl, 1), new ColorBurnShader(gl, 2)];
+
+	    array[PIXI.BLEND_MODES.COLOR_DODGE] = [new ColorDodgeShader(gl, 0), new ColorDodgeShader(gl, 1), new ColorDodgeShader(gl, 2)];
+
+	    array[PIXI.BLEND_MODES.SCREEN] = [new ScreenShader(gl, 0), new ScreenShader(gl, 1), new ScreenShader(gl, 2)];
+
+	    array[PIXI.BLEND_MODES.DIFFERENCE] = [new DiffShader(gl, 0), new DiffShader(gl, 1), new DiffShader(gl, 2)];
+
+	    array[PIXI.BLEND_MODES.EXCLUSION] = [new ExclShader(gl, 0), new ExclShader(gl, 1), new ExclShader(gl, 2)];
 
         return array;
     }
