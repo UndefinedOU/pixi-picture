@@ -10,6 +10,11 @@ declare module PIXI.picture {
     }
 }
 declare module PIXI.picture {
+    class ColorShader extends PictureShader {
+        constructor(gl: WebGLRenderingContext, tilingMode: number);
+    }
+}
+declare module PIXI.picture {
     class DarkenShader extends PictureShader {
         constructor(gl: WebGLRenderingContext, tilingMode: number);
     }
@@ -30,7 +35,17 @@ declare module PIXI.picture {
     }
 }
 declare module PIXI.picture {
+    class HueShader extends PictureShader {
+        constructor(gl: WebGLRenderingContext, tilingMode: number);
+    }
+}
+declare module PIXI.picture {
     class LightenShader extends PictureShader {
+        constructor(gl: WebGLRenderingContext, tilingMode: number);
+    }
+}
+declare module PIXI.picture {
+    class LuminosityShader extends PictureShader {
         constructor(gl: WebGLRenderingContext, tilingMode: number);
     }
 }
@@ -88,6 +103,11 @@ declare module PIXI.picture {
         tilingMode: number;
         static blendVert: string;
         constructor(gl: WebGLRenderingContext, vert: string, frag: string, tilingMode: number);
+    }
+}
+declare module PIXI.picture {
+    class SatShader extends PictureShader {
+        constructor(gl: WebGLRenderingContext, tilingMode: number);
     }
 }
 declare module PIXI.picture {

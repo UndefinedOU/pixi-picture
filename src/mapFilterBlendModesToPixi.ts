@@ -25,6 +25,14 @@ namespace pixi_picture {
 
 	    array[PIXI.BLEND_MODES.EXCLUSION] = [new ExclShader(gl, 0), new ExclShader(gl, 1), new ExclShader(gl, 2)];
 
+	    array[PIXI.BLEND_MODES.HUE] = [new HueShader(gl, 0), new HueShader(gl, 1), new HueShader(gl, 2)];
+
+	    array[PIXI.BLEND_MODES.SATURATION] = [new SatShader(gl, 0), new SatShader(gl, 1), new SatShader(gl, 2)];
+
+	    array[PIXI.BLEND_MODES.COLOR] = [new ColorShader(gl, 0), new ColorShader(gl, 1), new ColorShader(gl, 2)];
+
+	    array[PIXI.BLEND_MODES.LUMINOSITY] = [new LuminosityShader(gl, 0), new LuminosityShader(gl, 1), new LuminosityShader(gl, 2)];
+
         return array;
     }
 }
